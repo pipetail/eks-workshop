@@ -1,0 +1,54 @@
+controller:
+  replicaCount: ${replica_count}
+  resources:
+    limits:
+      memory: ${memory_limit}
+      cpu: ${cpu_limit}
+    requests:
+      cpu: ${cpu_request}
+      memory: ${memory_request}
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/path: "/metrics"
+    prometheus.io/port: "10254"
+    prometheus.io/scheme: "http"
+    log: "true"
+  podLabels:
+    app: nginx-ingress
+    release: nginx-prod
+
+  ingressClass: "nginx"
+
+  publishService:
+    enabled: true
+
+  metrics:
+    enabled: true
+
+  service:
+    externalTrafficPolicy: Cluster
+    type: NodePort
+    nodePorts:
+      http: ${http_nodeport}
+      https: ${https_nodeport}
+
+  admissionWebhooks:
+    enabled: false
+
+  config:
+    proxy-body-size: "500M"
+    proxy-buffer-size: "256k"
+    use-forwarded-headers: "true"
+    client-header-buffer-size: "256k"
+    enable-brotli: "true"
+    log-format-escape-json: "true"
+    log-format-upstream: '{"requestUrl": "$host$request_uri", "timestamp": "$time_iso8601", "requestID": "$req_id", "proxyUpstreamName":
+    "$proxy_upstream_name", "proxyAlternativeUpstreamName": "$proxy_alternative_upstream_name","upstreamStatus":
+    "$upstream_status", "upstreamAddr": "$upstream_addr","httpRequest":{"requestMethod":
+    "$request_method", "requestUrl": "$host$request_uri", "status": $status,"requestSize":
+    "$request_length", "responseSize": "$upstream_response_length", "userAgent": "$http_user_agent",
+    "remoteIp": "$remote_addr", "referer": "$http_referer", "latency": "$upstream_response_time s",
+    "protocol":"$server_protocol"}}'
+
+defaultBackend:
+  enabled: false

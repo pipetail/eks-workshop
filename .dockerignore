@@ -1,0 +1,6 @@
+infrastructure
+modules
+.envrc
+.git
+Dockerfile
+deploy
